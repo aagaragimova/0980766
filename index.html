@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future Forms — What Would You Say?</title>
+<style>
+:root{--ink:#40352f;--muted:#81736b;--cream:#fbf7f0;--paper:#fffdf9;--teal:#6eaaa8;--teal-dark:#3d7776;--peach:#f0c9b5;--line:#eadfd3;--gold:#d7ae68}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:linear-gradient(135deg,#f5eee5,#e9f0ed);font-family:Arial,Helvetica,sans-serif;color:var(--ink);display:flex;align-items:center;justify-content:center;padding:24px}
+.app{width:min(850px,100%);background:var(--paper);border:1px solid #e9ded2;border-radius:28px;box-shadow:0 18px 55px #5a49351a;overflow:hidden}
+.top{padding:25px 30px 22px;background:var(--teal);color:white;position:relative}
+.eyebrow{text-transform:uppercase;letter-spacing:2.5px;font-size:11px;font-weight:700;opacity:.9}
+h1{font-size:clamp(26px,4vw,38px);margin:8px 0 7px;line-height:1.1}
+.subtitle{margin:0;opacity:.95;font-size:15px;line-height:1.5}
+main{padding:28px 30px 30px}
+.progress-row{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.track{height:5px;background:#eee6dc;border-radius:99px;margin:12px 0 25px;overflow:hidden}
+.fill{height:100%;background:var(--gold);width:5%;transition:width .25s}
+.card{min-height:280px;background:var(--cream);border:1px solid var(--line);border-radius:22px;padding:clamp(22px,4vw,38px);display:flex;flex-direction:column;justify-content:center}
+.tag{display:inline-flex;align-self:flex-start;border-radius:99px;padding:7px 11px;background:#e1eeeb;color:var(--teal-dark);font-size:11px;letter-spacing:1.2px;font-weight:800;text-transform:uppercase;margin-bottom:18px}
+.scenario{font-size:clamp(25px,4.2vw,37px);font-weight:750;line-height:1.2;margin:0 0 16px}
+.prompt{font-size:17px;line-height:1.5;margin:0;color:#65574e}
+.hint{margin-top:18px;color:var(--muted);font-size:13px}
+.answer{display:none;margin-top:23px;padding:18px 20px;background:#fff;border:1px solid #d8e7e3;border-radius:15px;line-height:1.5}
+.answer.visible{display:block;animation:fade .2s ease}
+.answer-label{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--teal-dark);font-weight:800;margin-bottom:7px}
+.answer-text{font-size:21px;font-weight:700;margin:0 0 8px}
+.explain{font-size:14px;color:var(--muted);margin:0}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+button{border:0;border-radius:12px;padding:13px 18px;font-size:14px;font-weight:700;cursor:pointer;transition:transform .15s,background .15s}
+button:hover{transform:translateY(-1px)}
+.primary{background:var(--teal-dark);color:white;flex:1}
+.secondary{background:#f2e8dc;color:var(--ink)}
+.outline{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.footer{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:17px;color:var(--muted);font-size:12px}
+kbd{font:inherit;background:#f3ece3;padding:4px 7px;border-radius:5px}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:560px){body{padding:10px}.app{border-radius:20px}.top,main{padding:22px 18px}.card{min-height:260px}.controls button{flex:1}.footer{align-items:flex-start;flex-direction:column}}
+@media print{body{background:white;padding:0}.app{box-shadow:none;width:100%;border:0}.controls,.footer{display:none}.answer{display:block}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="eyebrow">Grammar warm-up · Future forms</div>
+    <h1>What Would You Say?</h1>
+    <p class="subtitle">Read the situation. Say your answer aloud. Then reveal a possible answer and explain why that future form fits.</p>
+  </header>
+  <main>
+    <div class="progress-row"><span id="counter">Situation 1 of 24</span><span id="category">Spontaneous decision</span></div>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <section class="card">
+      <div class="tag" id="tag">WILL</div>
+      <h2 class="scenario" id="scenario">Your phone is ringing.</h2>
+      <p class="prompt" id="prompt">You are sitting next to it. Say what you decide to do.</p>
+      <p class="hint">💬 Try to make a full sentence before revealing the answer.</p>
+      <div class="answer" id="answer">
+        <div class="answer-label">One possible answer</div>
+        <p class="answer-text" id="answerText"></p>
+        <p class="explain" id="explain"></p>
+      </div>
+    </section>
+    <div class="controls">
+      <button class="secondary" id="prev">← Previous</button>
+      <button class="primary" id="reveal">Reveal answer</button>
+      <button class="secondary" id="next">Next →</button>
+      <button class="outline" id="shuffle">↻ Random</button>
+    </div>
+    <div class="footer"><span>Teacher tip: accept other grammatically correct answers if the context supports them.</span><span><kbd>←</kbd> <kbd>→</kbd> navigate</span></div>
+  </main>
+</div>
+<script>
+const cards = [
+{tag:"WILL",cat:"Spontaneous decision",s:"Your phone is ringing.",p:"You are sitting next to it. Say what you decide to do.",a:"I'll answer it!",e:"WILL can express a decision made at the moment of speaking."},
+{tag:"BE GOING TO",cat:"Prediction from evidence",s:"Look at those dark clouds!",p:"Predict what is going to happen.",a:"It's going to rain.",e:"BE GOING TO is used for a prediction based on what you can see."},
+{tag:"PRESENT CONTINUOUS",cat:"Future arrangement",s:"You have cinema tickets for Friday.",p:"Tell your friend about your plan.",a:"I'm going to the cinema on Friday.",e:"Present Continuous can describe a fixed personal arrangement."},
+{tag:"PRESENT SIMPLE",cat:"Timetable",s:"The train timetable says 8:15.",p:"Tell your friend the departure time.",a:"The train leaves at 8:15.",e:"Present Simple is used for timetables and schedules."},
+{tag:"SHALL",cat:"Offer",s:"Your friend looks exhausted.",p:"Offer to make them a drink.",a:"Shall I make you some tea?",e:"SHALL I…? is a common way to offer help."},
+{tag:"BE GOING TO",cat:"Intention",s:"You've decided to learn Spanish.",p:"Tell your friend about your intention.",a:"I'm going to learn Spanish.",e:"BE GOING TO describes an intention or decision made before speaking."},
+{tag:"WILL",cat:"Offer / promise",s:"Your friend has too many bags.",p:"Offer to carry one.",a:"I'll carry one for you.",e:"WILL can be used for an offer made at the moment of speaking."},
+{tag:"PRESENT CONTINUOUS",cat:"Future arrangement",s:"You've booked a table for 7 p.m.",p:"Tell your colleague about tonight.",a:"I'm having dinner with a friend at 7.",e:"A planned arrangement with a set time often uses Present Continuous."},
+{tag:"PRESENT SIMPLE",cat:"Programme",s:"Your favourite show starts at 9 p.m.",p:"Tell someone when it starts.",a:"It starts at 9 p.m.",e:"Use Present Simple for a programme or scheduled event."},
+{tag:"WILL",cat:"Prediction / opinion",s:"You think your team is playing really well.",p:"Make a prediction about the match.",a:"I think our team will win.",e:"WILL is often used for predictions based on an opinion."},
+{tag:"BE GOING TO",cat:"Prediction from evidence",s:"That child is riding a bike straight towards a puddle!",p:"Predict what will happen.",a:"He's going to fall into the puddle.",e:"Use BE GOING TO when present evidence supports your prediction."},
+{tag:"PRESENT CONTINUOUS",cat:"Future arrangement",s:"Your friend asks about Saturday. You've arranged to meet Mia.",p:"Tell them your plan.",a:"I'm meeting Mia on Saturday.",e:"Present Continuous describes a definite arrangement."},
+{tag:"SHALL",cat:"Suggestion",s:"You and your friend can't decide what to do.",p:"Suggest going for a walk.",a:"Shall we go for a walk?",e:"SHALL WE…? can introduce a suggestion."},
+{tag:"WILL",cat:"Spontaneous decision",s:"The doorbell rings while you're cooking.",p:"Decide what to do.",a:"I'll get the door!",e:"WILL expresses a decision made right now."},
+{tag:"PRESENT SIMPLE",cat:"Timetable",s:"Your flight confirmation says boarding begins at 6:40.",p:"Tell your travel partner when boarding begins.",a:"Boarding begins at 6:40.",e:"Scheduled times are commonly expressed with Present Simple."},
+{tag:"BE GOING TO",cat:"Intention",s:"Your kitchen is a mess and you've decided to clean it.",p:"Tell your family what you've decided.",a:"I'm going to clean the kitchen.",e:"BE GOING TO describes a prior intention."},
+{tag:"WILL",cat:"Prediction / opinion",s:"Your friend has studied hard for an exam.",p:"Say what you think will happen.",a:"I'm sure you'll do well.",e:"WILL can express a prediction or belief about the future."},
+{tag:"PRESENT CONTINUOUS",cat:"Future arrangement",s:"You've made an appointment with the dentist for Tuesday.",p:"Tell your friend about it.",a:"I'm seeing the dentist on Tuesday.",e:"Present Continuous is natural for arranged appointments."},
+{tag:"PRESENT SIMPLE",cat:"Schedule",s:"The museum website says it opens at 10 a.m. tomorrow.",p:"Tell your friend the opening time.",a:"The museum opens at 10 a.m. tomorrow.",e:"Use Present Simple for opening times and published schedules."},
+{tag:"WILL",cat:"Promise",s:"You borrowed your friend's book.",p:"Promise to return it tomorrow.",a:"I'll bring it back tomorrow.",e:"WILL can express a promise."},
+{tag:"BE GOING TO",cat:"Prediction from evidence",s:"Your friend is carrying a huge stack of books.",p:"Make a prediction about the books.",a:"Those books are going to fall!",e:"The prediction is based on what you can see now."},
+{tag:"PRESENT CONTINUOUS",cat:"Future arrangement",s:"You've arranged to have lunch with your sister tomorrow.",p:"Tell a colleague about your plans.",a:"I'm having lunch with my sister tomorrow.",e:"Present Continuous can describe a planned social arrangement."},
+{tag:"PRESENT SIMPLE",cat:"Timetable",s:"The last bus leaves at 11:30 p.m.",p:"Tell your friend the last bus time.",a:"The last bus leaves at 11:30 p.m.",e:"Use Present Simple for transport timetables."},
+{tag:"SHALL",cat:"Offer",s:"Your friend can't find the address on their phone.",p:"Offer to help them.",a:"Shall I look it up for you?",e:"SHALL I…? is useful for offering to do something."}
+];
+let order=cards.map((_,i)=>i), pos=0, revealed=false;
+const $=id=>document.getElementById(id);
+function render(){
+ const c=cards[order[pos]];
+ $("counter").textContent=`Situation ${pos+1} of ${cards.length}`;
+ $("category").textContent=c.cat;
+ $("tag").textContent=c.tag;
+ $("scenario").textContent=c.s;
+ $("prompt").textContent=c.p;
+ $("answerText").textContent=c.a;
+ $("explain").textContent=c.e;
+ $("fill").style.width=((pos+1)/cards.length*100)+"%";
+ $("answer").classList.toggle("visible",revealed);
+ $("reveal").textContent=revealed?"Hide answer":"Reveal answer";
+ $("prev").disabled=pos===0;
+ $("prev").style.opacity=pos===0?".45":"1";
+ $("next").textContent=pos===cards.length-1?"Start again →":"Next →";
+}
+$("reveal").addEventListener("click",()=>{revealed=!revealed;render()});
+$("prev").addEventListener("click",()=>{if(pos>0){pos--;revealed=false;render()}});
+$("next").addEventListener("click",()=>{pos=(pos+1)%cards.length;revealed=false;render()});
+$("shuffle").addEventListener("click",()=>{let n;do{n=Math.floor(Math.random()*cards.length)}while(n===order[pos]&&cards.length>1);pos=n;revealed=false;render()});
+document.addEventListener("keydown",e=>{if(e.key==="ArrowRight")$("next").click();if(e.key==="ArrowLeft")$("prev").click();if(e.key===" "&&e.target.tagName!=="BUTTON"){e.preventDefault();$("reveal").click()}});
+render();
+</script>
+</body>
+</html>
